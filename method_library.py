@@ -14,9 +14,13 @@ def CalcRSI(prices, n=14):
     prices : Series
         The column from a dataframe for which you want to calculate RSI.
     n : int, optional (default=14) 
-        The number of periods to calculate RSI over.    
+        The number of periods to calculate RSI over.
+
+    Returns:
+    ________
+    rsiDF : dataframe object        
     '''
-    
+
     deltas = np.diff(prices)
     seed = deltas[:n]
     up = seed[seed>=0].sum()+0.000001/n
@@ -40,3 +44,26 @@ def CalcRSI(prices, n=14):
     rsiDF=pd.DataFrame(rsi)
     rsiDF=rsiDF.round(2)
     return rsiDF
+
+
+def SlowStochsK(series,period=14):
+    '''
+    Calculates the slow stochastic oscillator. 
+
+    Parameters:
+    ___________
+    series : series
+        The dataframe column for which you want to calculate SSK
+    period : int, optional (default=14)
+        The period over which youn want SSK calculated.
+
+    Returns:
+    ____________
+    result : dataframe object
+        The original series joined with the new SSK data.
+
+    '''
+    period_max=series.rolling(window=period,center=False).max()
+    period_min=series.rolling(window=period,center=False).min()
+    result=(series-period_min)/(period_max - period_min)
+    return result    
